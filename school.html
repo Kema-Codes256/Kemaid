@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        #library-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f2f2f2;
+        }
+        input, button {
+            padding: 8px;
+            margin: 5px;
+        }
+        .book {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: white;
+            margin-top: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>School Library Management</h1>
+    <div id="library-container">
+        <input type="text" id="bookTitle" placeholder="Book Title">
+        <input type="text" id="authorName" placeholder="Author">
+        <button onclick="addBook()">Add Book</button>
+
+        <h2>Book List</h2>
+        <div id="bookList"></div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", loadBooks);
+
+        function loadBooks() {
+            let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+            let bookList = document.getElementById("bookList");
+            bookList.innerHTML = "";
+
+            books.forEach((book, index) => {
+                let div = document.createElement("div");
+                div.classList.add("book");
+                div.innerHTML = `<span>${book.title} - ${book.author}</span>
+                                <button onclick="deleteBook(${index})">Remove</button>`;
+                bookList.appendChild(div);
+            });
+        }
+
+        function addBook() {
+            let title = document.getElementById("bookTitle").value;
+            let author = document.getElementById("authorName").value;
+
+            if (title.trim() === "" || author.trim() === "") {
+                alert("Please enter both title and author");
+                return;
+            }
+
+            let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+            books.push({ title, author });
+            localStorage.setItem("libraryBooks", JSON.stringify(books));
+
+            loadBooks();
+        }
+
+        function deleteBook(index) {
+            let books = JSON.parse(localStorage.getItem("libraryBooks")) || [];
+            books.splice(index, 1);
+            localStorage.setItem("libraryBooks", JSON.stringify(books));
+
+            loadBooks();
+        }
+    </script>
+
+</body>
+</html>
